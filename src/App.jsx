@@ -1,51 +1,72 @@
 import React, { Component } from "react";
-import logo from "./logo.svg";
-import "./App.css";
-import openSocket from "socket.io-client";
-const socket = openSocket("http://localhost:3000");
+import globalStore from "./GlobalStore";
+import { observer } from "mobx-react";
 
-class App extends Component {
-	constructor(props) {
-		super(props);
+export default observer(
+	class App extends Component {
+		constructor(props) {
+			super(props);
 
-		this.room = "abc123";
-	}
-	componentDidMount() {
-		socket.on("connect", function() {
-			// Connected, let's sign-up for to receive messages for this room
-			socket.emit("room", this.room);
-		});
+			this.joinRoom = this.joinRoom.bind(this);
+		}
+		componentDidMount() {
+			//
+			// 	setTimeout(() => {
+			// 		socket.emit("message", "what is going on, party people?");
+			// 		console.log("emit");
+			// 	}, 5000);
+			//
+			// 	socket.on("message", function(data) {
+			// 		console.log("Incoming message:", data);
+			// 	});
+		}
 
-		setTimeout(() => {
-			socket.emit("message", "what is going on, party people?");
-			console.log("emit");
-		}, 5000);
+		joinRoom(evt) {
+			evt.preventDefault();
 
-		socket.on("message", function(data) {
-			console.log("Incoming message:", data);
-		});
-	}
+			globalStore.socket.emit("newPlayer", {
+				roomCode: globalStore.roomCode,
+				name: globalStore.playerName
+			});
 
-	render() {
-		return (
-			<div className="App">
-				<header className="App-header">
-					<img src={logo} className="App-logo" alt="logo" />
-					<p>
-						Edit <code>src/App.js</code> and save to reload.
-					</p>
-					<a
-						className="App-link"
-						href="https://reactjs.org"
-						target="_blank"
-						rel="noopener noreferrer"
+			this.props.history.push("/waitingRoom");
+		}
+
+		render() {
+			return (
+				<div className="container">
+					<form onSubmit={this.joinRoom}>
+						<p>Enter Room Code:</p>
+						<input
+							type="text"
+							className="form-control"
+							value={globalStore.roomCode}
+							onChange={evt => {
+								globalStore.roomCode = evt.target.value;
+							}}
+						/>
+						<input
+							type="text"
+							className="form-control"
+							value={globalStore.playerName}
+							onChange={evt => {
+								globalStore.playerName = evt.target.value;
+							}}
+						/>
+						<button type="submit" className="btn btn-primary">
+							Join
+						</button>
+					</form>
+					<button
+						className="btn btn-primary"
+						onClick={() => {
+							this.props.history.push("/start");
+						}}
 					>
-						Learn React
-					</a>
-				</header>
-			</div>
-		);
+						Start Game
+					</button>
+				</div>
+			);
+		}
 	}
-}
-
-export default App;
+);
