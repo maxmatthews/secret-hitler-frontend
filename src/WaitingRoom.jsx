@@ -14,13 +14,13 @@ export default observer(
 				<div>
 					<div
 						style={{
-							display: "flex",
-							flexDirection: "column",
-							justifyContent: "center",
+							margin: "0 auto",
+							width: "500px",
 							background: "#F7E3C1",
 							textTransform: "uppercase"
 						}}
 					>
+						<img src="shlogo.png" style={{ width: "100%" }} />
 						<h1>Waiting Room</h1>
 						<ul>
 							{globalStore.players.map(player => {
@@ -37,7 +37,14 @@ export default observer(
 								Start Game
 							</button>
 						) : (
-							<p>Waiting for more players</p>
+							<p
+								style={{
+									backgroundColor: "#373634",
+									color: "#fff"
+								}}
+							>
+								Waiting for more players
+							</p>
 						)}
 					</div>
 				</div>
