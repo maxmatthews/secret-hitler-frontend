@@ -21,9 +21,9 @@ export default observer(
 					{globalStore.players.length >= 5 ? (
 						<button
 							className="btn btn-primary"
-							onClick={()=>{globalStore.socket.emit("startGame", {
-								roomCode: globalStore.roomCode
-							}); this.props.history.push("/setOrder")}}
+							onClick={() => {
+								this.props.history.push("/setOrder");
+							}}
 						>
 							Start Game
 						</button>

@@ -14,8 +14,6 @@ export default observer(
 
 		setOrder() {
 			globalStore.socket.emit("playerOrder", {playerOrder: this.state.playerOrder, roomCode: globalStore.roomCode});
-
-			this.props.history.push("/partyAssignment");
 		}
 
 		render() {
