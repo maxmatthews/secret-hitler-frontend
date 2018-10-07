@@ -96,6 +96,7 @@ export default observer(
 								onChange={evt => {
 									globalStore.playerName = evt.target.value;
 								}}
+								placeholder="Name"
 							/>
 							<button
 								type="submit"
