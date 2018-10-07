@@ -13,7 +13,10 @@ export default observer(
 		}
 
 		vote(position) {
-			globalStore.socket.emit("vote", { position });
+			globalStore.socket.emit("vote", {
+				position,
+				roomCode: globalStore.roomCode
+			});
 			this.props.history.push("/waiting");
 		}
 

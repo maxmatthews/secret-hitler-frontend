@@ -42,13 +42,13 @@ export default class Router extends Component {
 				globalStore.nominatedChancellor = data.nominatedChancellor;
 				globalStore.nominatedPresident = data.nominatedPresident;
 
-				console.log(data);
 				this.setState({ redirect: "/vote" });
 			}
 
 			if ("goToVoteResults" in data) {
-				globalStore.votingResults = data.votes;
-				this.setState({ redirect: "/voteResults" });
+				console.log(data.votes);
+				globalStore.votes = data.votes;
+				this.setState({ redirect: "/votingResults" });
 			}
 		});
 

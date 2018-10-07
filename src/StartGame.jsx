@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import globalStore from "./GlobalStore";
 import { observer } from "mobx-react";
-import { toJS } from "mobx";
 import openSocket from "socket.io-client";
+import { Redirect } from "react-router";
 
 export default observer(
 	class StartGame extends Component {
@@ -11,8 +11,9 @@ export default observer(
 
 			this.gotItCount = 0;
 			this.voteCount = 0;
+			this.votingResultsGotIt = 0;
 
-			this.state = {};
+			this.state = { redirect: null };
 
 			if (!globalStore.roomCode) {
 				globalStore.roomCode = this.makeid();
@@ -141,6 +142,20 @@ export default observer(
 					}
 				});
 
+				globalStore.socket.on("acknowledgeVote", data => {
+					this.votingResultsGotIt++;
+
+					if (this.votingResultsGotIt === globalStore.players.length) {
+						globalStore.socket.emit("everyoneKnowsVotingResults", {
+							roomCode: globalStore.roomCode
+						});
+					}
+				});
+
+				globalStore.socket.on("chancellorPolicySelection", data => {
+					this.setState({ redirect: "/board" });
+				});
+
 				globalStore.socket.on("nominateChancellor", data => {
 					globalStore.votes = [];
 					globalStore.nominatedChancellor = data.index;
@@ -159,7 +174,7 @@ export default observer(
 					});
 				});
 
-				globalStore.socket.on("vote", data => {
+				globalStore.socket.on("logVote", data => {
 					this.voteCount++;
 
 					globalStore.votes = [
@@ -212,8 +227,9 @@ export default observer(
 		}
 
 		render() {
-			console.log(toJS(globalStore.players));
-			return (
+			return this.state.redirect ? (
+				<Redirect to={this.state.redirect} />
+			) : (
 				<div>
 					<h1>Room Code:</h1>
 					<h2>{globalStore.roomCode}</h2>
